@@ -37,6 +37,7 @@ public class GameEngine implements Runnable {
     public void init() throws Exception{
         window.init();
         gameLogic.init();
+        timer.init();
     }
 
     protected void cleanup(){
@@ -48,7 +49,8 @@ public class GameEngine implements Runnable {
         float accumulator = 0f;
         float interval = 1f / 30;
 
-        while(!window.windowShouldClose()){
+        boolean running = true;
+        while(running && !window.windowShouldClose()){
             elapsedTime = timer.getElapsedTime();
             accumulator += elapsedTime;
 
@@ -70,5 +72,6 @@ public class GameEngine implements Runnable {
 
     protected void render(){
         gameLogic.render(window);
+        window.update();
     }
 }

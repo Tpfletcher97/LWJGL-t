@@ -30,28 +30,49 @@ public class Renderer {
                 0.5f, -0.5f, 0.0f
         };
 
-        FloatBuffer vertBuffer = MemoryUtil.memAllocFloat(verticies.length);
-        vertBuffer.put(verticies).flip();
+        FloatBuffer vertBuffer = null;
+        try{
+            vertBuffer = MemoryUtil.memAllocFloat(verticies.length);
+            vertBuffer.put(verticies).flip();
 
-        vaoId = glGenVertexArrays();
-        glBindVertexArray(vaoId);
+            vaoId = glGenVertexArrays();
+            glBindVertexArray(vaoId);
 
-        vboId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vboId);
-        glBufferData(GL_ARRAY_BUFFER, vertBuffer, GL_STATIC_DRAW);
+            vboId = glGenBuffers();
+            glBindBuffer(GL_ARRAY_BUFFER, vboId);
+            glBufferData(GL_ARRAY_BUFFER, vertBuffer, GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-        //Unbind
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-
-        if(vertBuffer != null){
-            MemoryUtil.memFree(vertBuffer);
+            //Unbind
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
+        } finally {
+            if(vertBuffer != null){
+                MemoryUtil.memFree(vertBuffer);
+            }
         }
     }
 
     public void render(Window window){
+        clear();
+
+        if(window.isResized()){
+            glViewport(0, 0, window.getWidth(), window.getHeight());
+            window.setResized(false);
+        }
+
+        shaderProgram.bind();
+
+        glBindVertexArray(vaoId);
+        glEnableVertexAttribArray(0);
+
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glDisableVertexAttribArray(0);
+        glBindVertexArray(0);
+
+        shaderProgram.unbind();
 
     }
 

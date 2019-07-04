@@ -22,7 +22,7 @@ public class Window {
 
     private boolean resized;
 
-    public Window(int height, int width, String title){
+    public Window(int width, int height, String title){
         this.width = width;
         this.height = height;
         this.title = title;
