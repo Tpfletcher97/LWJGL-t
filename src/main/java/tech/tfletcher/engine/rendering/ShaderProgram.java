@@ -1,4 +1,4 @@
-package tech.tfletcher.engine;
+package tech.tfletcher.engine.rendering;
 
 import static org.lwjgl.opengl.GL20.*;
 

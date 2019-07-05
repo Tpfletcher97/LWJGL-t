@@ -1,5 +1,7 @@
 package tech.tfletcher.engine;
 
+import tech.tfletcher.engine.rendering.Window;
+
 public interface IGameLogic{
     void init() throws Exception;
 

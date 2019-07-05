@@ -2,7 +2,7 @@ package tech.tfletcher;
 
 import tech.tfletcher.engine.GameEngine;
 import tech.tfletcher.engine.IGameLogic;
-import tech.tfletcher.engine.TestGame;
+import tech.tfletcher.game.TestGame;
 
 class Application {
     private static final int W_WIDTH = 600;

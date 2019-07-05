@@ -1,5 +1,7 @@
 package tech.tfletcher.engine;
 
+import tech.tfletcher.engine.rendering.Window;
+
 import java.lang.Runnable;
 
 public class GameEngine implements Runnable {

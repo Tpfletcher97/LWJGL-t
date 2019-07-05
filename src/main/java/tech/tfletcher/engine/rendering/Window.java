@@ -1,4 +1,4 @@
-package tech.tfletcher.engine;
+package tech.tfletcher.engine.rendering;
 
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
