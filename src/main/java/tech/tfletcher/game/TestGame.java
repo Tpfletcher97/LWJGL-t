@@ -30,11 +30,20 @@ public class TestGame implements IGameLogic {
                 0.5f, 0.5f, 0.0f,
         };
 
-        int[] indicies = new int[]{
+        float[] colors = new float[]{
+                0.5f, 0.0f, 0.0f,
+                0.5f, 0.0f, 0.0f,
+                0.0f, 0.0f, 0.5f,
+                0.0f, 0.0f, 0.5f
+        };
+
+        int[] indices = new int[]{
           0, 1, 3, 3, 1, 2
         };
 
-        mesh = new Mesh(positions, indicies);
+
+
+        mesh = new Mesh(positions, colors, indices);
 
     }
 
@@ -69,5 +78,6 @@ public class TestGame implements IGameLogic {
     @Override
     public void cleanup() {
         renderer.cleanup();
+        mesh.cleanUp();
     }
 }

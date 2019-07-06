@@ -11,15 +11,18 @@ public class Mesh {
     private final int vaoId;
     private final int posVboId;
     private final int idxVboId;
+    private final int colorVboId;
     private final int vertexCount;
 
-    public Mesh(float[] positions, int[] indicies){
+    public Mesh(float[] positions, float[] colors, int[] indices){
 
         FloatBuffer posBuffer = null;
-        IntBuffer indiciesBuffer = null;
+        FloatBuffer colorBuffer = null;
+        IntBuffer indicesBuffer = null;
+
 
         try{
-            vertexCount = indicies.length;
+            vertexCount = indices.length;
 
             vaoId = glGenVertexArrays();
             glBindVertexArray(vaoId);
@@ -32,22 +35,38 @@ public class Mesh {
             glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
+            //colorVbo
+            colorVboId = glGenBuffers();
+            colorBuffer = MemoryUtil.memAllocFloat(colors.length);
+            colorBuffer.put(colors).flip();
+            glBindBuffer(GL_ARRAY_BUFFER, colorVboId);
+            glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
+
+            glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+
             //idxVbo
             idxVboId = glGenBuffers();
-            indiciesBuffer = MemoryUtil.memAllocInt(indicies.length);
-            indiciesBuffer.put(indicies).flip();
+            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
+            indicesBuffer.put(indices).flip();
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indiciesBuffer, GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
+
+
+
+
 
         } finally {
             if (posBuffer != null){
                 MemoryUtil.memFree(posBuffer);
             }
-            if (indiciesBuffer != null){
-                MemoryUtil.memFree(indiciesBuffer);
+            if (indicesBuffer != null){
+                MemoryUtil.memFree(indicesBuffer);
+            }
+            if(colorBuffer != null){
+                MemoryUtil.memFree(colorBuffer);
             }
 
         }
@@ -68,6 +87,7 @@ public class Mesh {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDeleteBuffers(posVboId);
         glDeleteBuffers(idxVboId);
+        glDeleteBuffers(colorVboId);
 
         //vba cleanup
         glBindVertexArray(0);

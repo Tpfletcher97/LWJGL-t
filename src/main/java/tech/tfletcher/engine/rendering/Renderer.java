@@ -19,8 +19,8 @@ public class Renderer {
         shaderProgram = new ShaderProgram();
 
         if (oldGL){
-            shaderProgram.createVertexShader(Utils.loadResource("/shaders/vert/passThrough-130.vert"));
-            shaderProgram.createFragmentShader(Utils.loadResource("/shaders/frag/passThrough-130.frag"));
+            shaderProgram.createVertexShader(Utils.loadResource("/shaders/vert/mesh-130.vert"));
+            shaderProgram.createFragmentShader(Utils.loadResource("/shaders/frag/mesh-130.frag"));
         } else{
 
             shaderProgram.createVertexShader(Utils.loadResource("/shaders/vert/passThrough-330.vert"));
@@ -43,10 +43,12 @@ public class Renderer {
 
         glBindVertexArray(mesh.getVaoId());
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
 
         glDrawElements(GL_TRIANGLES, mesh.getVertexCount(), GL_UNSIGNED_INT, 0);
 
         glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
         glBindVertexArray(0);
 
         shaderProgram.unbind();
