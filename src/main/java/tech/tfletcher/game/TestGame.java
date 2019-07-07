@@ -1,9 +1,10 @@
 package tech.tfletcher.game;
 
+import tech.tfletcher.engine.GameObject;
 import tech.tfletcher.engine.IGameLogic;
 import tech.tfletcher.engine.rendering.Renderer;
 import tech.tfletcher.engine.rendering.Window;
-import tech.tfletcher.engine.rendering.Mesh;
+import tech.tfletcher.engine.rendering.Primitives.*;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
@@ -13,7 +14,7 @@ public class TestGame implements IGameLogic {
     private float color = 0.0f;
     private final Renderer renderer;
 
-    Mesh mesh;
+    GameObject[] gameObjects = new GameObject[1];
 
     public TestGame(){
         renderer = new Renderer();
@@ -23,27 +24,10 @@ public class TestGame implements IGameLogic {
     public void init() throws Exception {
         renderer.init();
 
-        float[] positions = new float[]{
-                -0.5f, 0.5f, 0.0f,
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.5f, 0.5f, 0.0f,
-        };
+        Triangle meshT = new Triangle();
 
-        float[] colors = new float[]{
-                0.5f, 0.0f, 0.0f,
-                0.5f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.5f,
-                0.0f, 0.0f, 0.5f
-        };
-
-        int[] indices = new int[]{
-          0, 1, 3, 3, 1, 2
-        };
-
-
-
-        mesh = new Mesh(positions, colors, indices);
+        gameObjects[0] = new GameObject(meshT.mesh());
+        gameObjects[0].setPosition(0,0,-3);
 
     }
 
@@ -66,18 +50,21 @@ public class TestGame implements IGameLogic {
         } else if(color < 0){
             color = 0;
         }
+        float y = gameObjects[0].getRotation().y;
+        y += direction;
+        gameObjects[0].setRotation(0, y, 0);
     }
 
     @Override
     public void render(Window window) {
         window.setClearColor(color, color, color, 0.0f);
-        renderer.render(window, mesh);
+
+        renderer.renderMesh(window, gameObjects);
 
     }
 
     @Override
     public void cleanup() {
         renderer.cleanup();
-        mesh.cleanUp();
     }
 }

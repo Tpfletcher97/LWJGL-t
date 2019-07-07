@@ -1,4 +1,4 @@
-package tech.tfletcher.engine.rendering;
+package tech.tfletcher.engine.rendering.Primitives;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -92,6 +92,18 @@ public class Mesh {
         //vba cleanup
         glBindVertexArray(0);
         glDeleteVertexArrays(vaoId);
+    }
+
+    public void render(){
+        glBindVertexArray(vaoId);
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+
+        glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
+
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glBindVertexArray(0);
     }
 
 }

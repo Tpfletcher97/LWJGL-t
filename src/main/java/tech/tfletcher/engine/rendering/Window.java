@@ -1,5 +1,6 @@
 package tech.tfletcher.engine.rendering;
 
+import org.joml.Matrix4f;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.*;
@@ -13,6 +14,8 @@ import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Window {
+
+
 
     private long window;
     private int width;
@@ -28,6 +31,7 @@ public class Window {
         this.title = title;
 
         this.resized = false;
+
     }
 
 
