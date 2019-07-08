@@ -1,4 +1,4 @@
-package tech.tfletcher.engine;
+package tech.tfletcher.engine.Utility;
 
 import java.io.InputStream;
 import java.util.Scanner;

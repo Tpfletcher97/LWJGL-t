@@ -1,7 +1,7 @@
 package tech.tfletcher.engine;
 
 import org.joml.Vector3f;
-import tech.tfletcher.engine.rendering.Primitives.Mesh;
+import tech.tfletcher.engine.rendering.Models.Mesh;
 
 public class GameObject {
 

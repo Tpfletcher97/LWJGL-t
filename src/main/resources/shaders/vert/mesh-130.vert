@@ -1,15 +1,15 @@
 #version 130
 
 in vec3 position;
-in vec3 inColor;
+in vec2 texCoord;
 
-out vec3 exColor;
+out vec2 outTexCoord;
 
-uniform mat4 worldMatrix;
+uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 
 void
 main(){
-    gl_Position = projectionMatrix * worldMatrix * vec4(position, 1.0);
-    exColor = inColor;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    outTexCoord = texCoord;
 }

@@ -2,10 +2,10 @@ package tech.tfletcher;
 
 import tech.tfletcher.engine.GameEngine;
 import tech.tfletcher.engine.IGameLogic;
-import tech.tfletcher.game.TestGame;
+import tech.tfletcher.gameInstances.TestGame;
 
 class Application {
-    private static final int W_WIDTH = 600;
+    private static final int W_WIDTH = 800;
     private static final int W_HEIGHT = 600;
 
     private static final String W_NAME = "GLFW Window";

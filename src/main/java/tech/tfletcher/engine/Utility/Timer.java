@@ -1,4 +1,4 @@
-package tech.tfletcher.engine;
+package tech.tfletcher.engine.Utility;
 
 public class Timer {
     private double lastLoopTime;

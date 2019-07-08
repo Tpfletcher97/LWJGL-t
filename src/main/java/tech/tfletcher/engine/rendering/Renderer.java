@@ -2,8 +2,9 @@ package tech.tfletcher.engine.rendering;
 
 import org.joml.Matrix4f;
 import tech.tfletcher.engine.GameObject;
-import tech.tfletcher.engine.Utils;
-import tech.tfletcher.engine.Transform;
+import tech.tfletcher.engine.Utility.Camera;
+import tech.tfletcher.engine.Utility.Utils;
+import tech.tfletcher.engine.Utility.Transform;
 
 
 import static org.lwjgl.opengl.GL11.*;
@@ -42,12 +43,13 @@ public class Renderer {
         shaderProgram.link();
 
         shaderProgram.createUniform("projectionMatrix");
-        shaderProgram.createUniform("worldMatrix");
+        shaderProgram.createUniform("modelViewMatrix");
+        shaderProgram.createUniform("texture_sampler");
 
 
     }
 
-    public void renderMesh(Window window, GameObject[] gameObjects){
+    public void renderMesh(Window window, GameObject[] gameObjects, Camera camera){
         clear();
 
         if(window.isResized()){
@@ -56,17 +58,20 @@ public class Renderer {
         }
 
         shaderProgram.bind();
-        Matrix4f projectionMatrix = transform.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
 
+        Matrix4f projectionMatrix = transform.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
+        Matrix4f viewMatrix = transform.getViewMatrix(camera);
+
+        shaderProgram.setUniform("texture_sampler", 0);
+
+
+
         for (GameObject gameObject : gameObjects){
-            Matrix4f worldMatrix =
-                    transform.getWorldMatrix(
-                            gameObject.getPosition(),
-                            gameObject.getRotation(),
-                            gameObject.getScale());
-            shaderProgram.setUniform("worldMatrix", worldMatrix);
+            Matrix4f modelViewMatrix =
+                    transform.getModelViewMatrix(gameObject, viewMatrix);
+            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             gameObject.getMesh().render();
         }
 
@@ -74,7 +79,7 @@ public class Renderer {
 
     }
 
-    public void clear(){
+    private void clear(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
