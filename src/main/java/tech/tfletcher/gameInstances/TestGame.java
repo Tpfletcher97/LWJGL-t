@@ -46,21 +46,24 @@ public class TestGame implements IGameLogic {
     public void init() throws Exception {
         renderer.init();
 
+        float reflectance = 1f;
+
         Mesh meshC = OBJLoader.loadMesh("/models/cube.obj");
         Texture texture = new Texture("/textures/block.png");
 
 
-        Material mat = new Material();
+        Material mat = new Material(texture, reflectance);
 
         meshC.setMaterial(mat);
 
         gameObjects[1] = new GameObject(meshC);
         gameObjects[1].setScale(0.03f);
-        gameObjects[1].setPosition(0,0.5f,-2);
+        gameObjects[1].setPosition(0,0.5f,0);
 
 
         Mesh bunny = OBJLoader.loadMesh("/models/bunny.obj");
-        bunny.setMaterial(mat);
+        Material mat2 = new Material();
+        bunny.setMaterial(mat2);
         gameObjects[0] = new GameObject(bunny);
         gameObjects[0].setScale(0.1f);
         gameObjects[0].setPosition(0, 0, -2);
@@ -68,14 +71,13 @@ public class TestGame implements IGameLogic {
         camera.setPosition(0.5f,0.25f, -1.5f);
         camera.setRotation(0, -45, 0);
 
-        ambientLight = new Vector3f(1f, 1f, 1f);
-        Vector3f lightColor = new Vector3f(1, 1, 1);
-        Vector3f lightPosition = new Vector3f(0,0.5f,-2f);
+        ambientLight = new Vector3f(0.3f, 0.3f, 0.3f);
+        Vector3f lightColor = new Vector3f(0.5f, 0.5f, 0.5f);
+        Vector3f lightPosition = new Vector3f(0,0f,0f);
         float lightIntensity = 1.0f;
         pointLight = new PointLight(lightColor, lightPosition, lightIntensity);
-        PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
+        PointLight.Attenuation att = new PointLight.Attenuation(0.5f, 1.0f, 1.0f);
         pointLight.setAttenuation(att);
-
     }
 
     @Override
@@ -108,11 +110,11 @@ public class TestGame implements IGameLogic {
 
         float lightPos = pointLight.getPosition().z;
         if(window.isKeyPressed(GLFW_KEY_N)){
-            this.pointLight.getPosition().z = lightPos+ 0.01f;
+            this.pointLight.getPosition().z = lightPos + 0.01f;
         } else if(window.isKeyPressed(GLFW_KEY_M)){
             this.pointLight.getPosition().z = lightPos - 0.01f;
         }
-        gameObjects[1].setPosition(0,0.25f, this.pointLight.getPosition().z);
+
 
 
     }
@@ -132,11 +134,15 @@ public class TestGame implements IGameLogic {
         }
 
         gameObjects[1].setRotation(cubeRotation, cubeRotation, cubeRotation);
+        Vector3f n = new Vector3f(this.pointLight.getPosition());
+        n.y += 0.1f;
+        n.z -= 1f;
+        gameObjects[1].setPosition(n);
     }
 
     @Override
     public void render(Window window) {
-        window.setClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         renderer.renderMesh(window, camera, gameObjects, ambientLight, pointLight);
 

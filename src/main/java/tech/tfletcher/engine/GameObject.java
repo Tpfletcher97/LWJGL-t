@@ -27,6 +27,12 @@ public class GameObject {
         this.position.z = z;
     }
 
+    public void setPosition(Vector3f v){
+        this.position.x = v.x;
+        this.position.y = v.y;
+        this.position.z = v.z;
+    }
+
     public float getScale(){
         return scale;
     }

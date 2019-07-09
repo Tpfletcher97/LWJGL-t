@@ -3,10 +3,7 @@ package tech.tfletcher.engine.rendering.Models;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
-import tech.tfletcher.engine.Utility.Texture;
 import tech.tfletcher.engine.rendering.Material;
 
 import static org.lwjgl.opengl.GL30.*;
@@ -110,7 +107,7 @@ public class Mesh {
     public void render(){
         if(material.isTextured()){
 
-            glActiveTexture(GL_TEXTURE0);
+            glActiveTexture(GL_TEXTURE0 + material.getTexture().getId());
             glBindTexture(GL_TEXTURE0, material.getTexture().getId());
         }
 

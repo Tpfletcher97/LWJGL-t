@@ -1,5 +1,6 @@
 package tech.tfletcher.engine.rendering;
 
+import jdk.swing.interop.LightweightContentWrapper;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -70,6 +71,7 @@ public class Renderer {
 
         shaderProgram.bind();
 
+
         Matrix4f projectionMatrix = transform.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
@@ -80,12 +82,11 @@ public class Renderer {
 
         PointLight currPointLight = new PointLight(pointLight);
         Vector3f lightPos = currPointLight.getPosition();
-        Vector4f aux = new Vector4f(lightPos, -1);
-        aux.mul(viewMatrix);
+        Matrix4f aux = transform.getLightModelViewMatrix(currPointLight, viewMatrix);
 
-        lightPos.x = aux.x;
-        lightPos.y = aux.y;
-        lightPos.z = aux.z;
+        lightPos.mulPosition(aux);
+
+        currPointLight.setPosition(lightPos);
         shaderProgram.setUniform("pointLight", currPointLight);
 
 
@@ -97,6 +98,7 @@ public class Renderer {
             Mesh mesh = gameObject.getMesh();
             Matrix4f modelViewMatrix = transform.getModelViewMatrix(gameObject, viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            shaderProgram.setUniform("material",gameObject.getMesh().getMaterial());
             mesh.render();
         }
 

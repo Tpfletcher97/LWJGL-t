@@ -3,6 +3,9 @@ package tech.tfletcher.engine.Utility;
 import org.joml.Vector3f;
 import org.joml.Matrix4f;
 import tech.tfletcher.engine.GameObject;
+import tech.tfletcher.engine.rendering.PointLight;
+
+import java.awt.*;
 
 public class Transform {
     private final Matrix4f projectionMatrix;
@@ -30,6 +33,11 @@ public class Transform {
                 .rotateZ((float)Math.toRadians(-rotation.z))
                 .scale(gameObject.getScale());
 
+        return modelViewMatrix;
+    }
+
+    public Matrix4f getLightModelViewMatrix(PointLight light, Matrix4f viewMatrix){
+        modelViewMatrix.set(viewMatrix).translate(light.getPosition());
         return modelViewMatrix;
     }
 
