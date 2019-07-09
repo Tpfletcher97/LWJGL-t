@@ -6,6 +6,10 @@ import tech.tfletcher.engine.GameObject;
 import tech.tfletcher.engine.IGameLogic;
 import tech.tfletcher.engine.Utility.Camera;
 import tech.tfletcher.engine.Utility.MouseInput;
+import tech.tfletcher.engine.Utility.OBJLoader;
+import tech.tfletcher.engine.Utility.Texture;
+import tech.tfletcher.engine.rendering.Material;
+import tech.tfletcher.engine.rendering.PointLight;
 import tech.tfletcher.engine.rendering.Renderer;
 import tech.tfletcher.engine.rendering.Window;
 import tech.tfletcher.engine.rendering.Models.*;
@@ -26,8 +30,11 @@ public class TestGame implements IGameLogic {
 
     private final Camera camera;
 
+    private Vector3f ambientLight;
+    private PointLight pointLight;
 
-    private GameObject[] gameObjects = new GameObject[3];
+
+    private GameObject[] gameObjects = new GameObject[2];
 
     public TestGame(){
         renderer = new Renderer();
@@ -39,21 +46,35 @@ public class TestGame implements IGameLogic {
     public void init() throws Exception {
         renderer.init();
 
-        Cube meshC = new Cube();
+        Mesh meshC = OBJLoader.loadMesh("/models/cube.obj");
+        Texture texture = new Texture("/textures/block.png");
 
-        gameObjects[0] = new GameObject(meshC.mesh());
+
+        Material mat = new Material();
+
+        meshC.setMaterial(mat);
+
+        gameObjects[1] = new GameObject(meshC);
+        gameObjects[1].setScale(0.03f);
+        gameObjects[1].setPosition(0,0.5f,-2);
+
+
+        Mesh bunny = OBJLoader.loadMesh("/models/bunny.obj");
+        bunny.setMaterial(mat);
+        gameObjects[0] = new GameObject(bunny);
         gameObjects[0].setScale(0.1f);
-        gameObjects[0].setPosition(0.1f,0.0f,-2);
+        gameObjects[0].setPosition(0, 0, -2);
 
-        gameObjects[1] = new GameObject(meshC.mesh());
-        gameObjects[1].setScale(0.1f);
-        gameObjects[1].setPosition(0,0,-2);
+        camera.setPosition(0.5f,0.25f, -1.5f);
+        camera.setRotation(0, -45, 0);
 
-        gameObjects[2] = new GameObject(meshC.mesh());
-        gameObjects[2].setScale(0.1f);
-        gameObjects[2].setPosition(0,0,-2.1f);
-
-        camera.setPosition(0,0, -1.5f);
+        ambientLight = new Vector3f(1f, 1f, 1f);
+        Vector3f lightColor = new Vector3f(1, 1, 1);
+        Vector3f lightPosition = new Vector3f(0,0.5f,-2f);
+        float lightIntensity = 1.0f;
+        pointLight = new PointLight(lightColor, lightPosition, lightIntensity);
+        PointLight.Attenuation att = new PointLight.Attenuation(0.0f, 0.0f, 1.0f);
+        pointLight.setAttenuation(att);
 
     }
 
@@ -85,6 +106,14 @@ public class TestGame implements IGameLogic {
             cameraInc.y = 0;
         }
 
+        float lightPos = pointLight.getPosition().z;
+        if(window.isKeyPressed(GLFW_KEY_N)){
+            this.pointLight.getPosition().z = lightPos+ 0.01f;
+        } else if(window.isKeyPressed(GLFW_KEY_M)){
+            this.pointLight.getPosition().z = lightPos - 0.01f;
+        }
+        gameObjects[1].setPosition(0,0.25f, this.pointLight.getPosition().z);
+
 
     }
 
@@ -97,19 +126,19 @@ public class TestGame implements IGameLogic {
             camera.moveRoation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
 
-        float cubeRotation = gameObjects[0].getRotation().x + 1.5f;
+        float cubeRotation = gameObjects[1].getRotation().x + 1.5f;
         if(cubeRotation > 360){
             cubeRotation = 0;
         }
 
-        gameObjects[0].setRotation(cubeRotation, cubeRotation, cubeRotation);
+        gameObjects[1].setRotation(cubeRotation, cubeRotation, cubeRotation);
     }
 
     @Override
     public void render(Window window) {
-        window.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        window.setClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-        renderer.renderMesh(window, gameObjects, camera);
+        renderer.renderMesh(window, camera, gameObjects, ambientLight, pointLight);
 
     }
 

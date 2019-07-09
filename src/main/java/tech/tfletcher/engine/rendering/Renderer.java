@@ -1,10 +1,13 @@
 package tech.tfletcher.engine.rendering;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import tech.tfletcher.engine.GameObject;
 import tech.tfletcher.engine.Utility.Camera;
 import tech.tfletcher.engine.Utility.Utils;
 import tech.tfletcher.engine.Utility.Transform;
+import tech.tfletcher.engine.rendering.Models.Mesh;
 
 
 import static org.lwjgl.opengl.GL11.*;
@@ -22,8 +25,11 @@ public class Renderer {
     private ShaderProgram shaderProgram;
     private boolean oldGL = true;
 
+    private float specularPower;
+
     public Renderer(){
         transform = new Transform();
+        specularPower = 10f;
     }
 
     public void init() throws Exception{
@@ -46,10 +52,15 @@ public class Renderer {
         shaderProgram.createUniform("modelViewMatrix");
         shaderProgram.createUniform("texture_sampler");
 
+        shaderProgram.createMaterialUniform("material");
+
+        shaderProgram.createUniform("specularPower");
+        shaderProgram.createUniform("ambientLight");
+        shaderProgram.createPointLightUniform("pointLight");
 
     }
 
-    public void renderMesh(Window window, GameObject[] gameObjects, Camera camera){
+    public void renderMesh(Window window, Camera camera, GameObject[] gameObjects, Vector3f ambientLight, PointLight pointLight){
         clear();
 
         if(window.isResized()){
@@ -64,15 +75,29 @@ public class Renderer {
 
         Matrix4f viewMatrix = transform.getViewMatrix(camera);
 
+        shaderProgram.setUniform("ambientLight", ambientLight);
+        shaderProgram.setUniform("specularPower", specularPower);
+
+        PointLight currPointLight = new PointLight(pointLight);
+        Vector3f lightPos = currPointLight.getPosition();
+        Vector4f aux = new Vector4f(lightPos, -1);
+        aux.mul(viewMatrix);
+
+        lightPos.x = aux.x;
+        lightPos.y = aux.y;
+        lightPos.z = aux.z;
+        shaderProgram.setUniform("pointLight", currPointLight);
+
+
         shaderProgram.setUniform("texture_sampler", 0);
 
 
 
         for (GameObject gameObject : gameObjects){
-            Matrix4f modelViewMatrix =
-                    transform.getModelViewMatrix(gameObject, viewMatrix);
+            Mesh mesh = gameObject.getMesh();
+            Matrix4f modelViewMatrix = transform.getModelViewMatrix(gameObject, viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            gameObject.getMesh().render();
+            mesh.render();
         }
 
         shaderProgram.unbind();
