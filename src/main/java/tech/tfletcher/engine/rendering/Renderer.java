@@ -11,6 +11,8 @@ import tech.tfletcher.engine.Utility.Transform;
 import tech.tfletcher.engine.rendering.Models.Mesh;
 
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.*;
 
 
@@ -61,7 +63,7 @@ public class Renderer {
 
     }
 
-    public void renderMesh(Window window, Camera camera, GameObject[] gameObjects, Vector3f ambientLight, PointLight pointLight){
+    public void renderMesh(Window window, Camera camera, List<GameObject> gameObjects, Vector3f ambientLight, List<PointLight> pointLights){
         clear();
 
         if(window.isResized()){
@@ -80,7 +82,7 @@ public class Renderer {
         shaderProgram.setUniform("ambientLight", ambientLight);
         shaderProgram.setUniform("specularPower", specularPower);
 
-        PointLight currPointLight = new PointLight(pointLight);
+        PointLight currPointLight = new PointLight(pointLights.get(0));
         Vector3f lightPos = currPointLight.getPosition();
         Matrix4f aux = transform.getLightModelViewMatrix(currPointLight, viewMatrix);
 

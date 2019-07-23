@@ -2,7 +2,7 @@ package tech.tfletcher;
 
 import tech.tfletcher.engine.GameEngine;
 import tech.tfletcher.engine.IGameLogic;
-import tech.tfletcher.gameInstances.TestGame;
+import tech.tfletcher.gameInstances.HexTest;
 
 class Application {
     private static final int W_WIDTH = 800;
@@ -12,7 +12,7 @@ class Application {
 
     public static void main(String[] args){
         try{
-            IGameLogic gameLogic = new TestGame();
+            IGameLogic gameLogic = new HexTest();
             GameEngine gameEngine = new GameEngine(W_NAME, W_WIDTH, W_HEIGHT, gameLogic);
             gameEngine.start();
 

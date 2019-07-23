@@ -22,7 +22,7 @@ public class Material {
         this.diffuseColour = DEFAULT_COLOUR;
         this.specularColour = DEFAULT_COLOUR;
         this.texture = null;
-        this.reflectance = 0;
+        this.reflectance = 1;
     }
 
     public Material(Vector4f colour, float reflectance) {
